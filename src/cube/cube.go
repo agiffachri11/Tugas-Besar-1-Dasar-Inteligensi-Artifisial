@@ -43,6 +43,20 @@ func NewCube() *Cube {
 	return cube
 }
 
+func CopyCube(c *Cube) *Cube {
+	// Create a new Cube instance with initialized score and nil successor
+	cube := &Cube{successor: nil}
+
+	// Copy the sequence array in place
+	for i := 0; i < SEQUENCE_SIZE; i++ {
+		cube.sequence[i] = c.sequence[i]
+	}
+
+	cube.score = cube.ObjectiveFuntion()
+
+	return cube
+}
+
 // Helper function to get an element at x, y, z
 func (c *Cube) get(x, y, z int) int {
 	return c.sequence[x*CUBE_ORDER*CUBE_ORDER+y*CUBE_ORDER+z]
