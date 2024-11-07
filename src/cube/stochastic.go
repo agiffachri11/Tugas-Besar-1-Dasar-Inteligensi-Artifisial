@@ -6,21 +6,17 @@ import (
 	"time"
 )
 
-// Ukuran dari sequence yang diinginkan
 const SEQUENCE_SIZE = 10
 
-// Cube adalah struktur yang menyimpan urutan elemen dan skor (nilai objektif).
 type Cube struct {
 	sequence []int
 	score    int
 }
 
-// NewCube adalah konstruktor untuk membuat Cube baru dengan urutan acak
 func NewCube() *Cube {
     cube := &Cube{}
     rand.Seed(time.Now().UnixNano())
 
-    // Inisialisasi urutan dengan angka 1 sampai SEQUENCE_SIZE
     for i := 0; i < SEQUENCE_SIZE; i++ {
         cube.sequence = append(cube.sequence, i+1)
     }
@@ -36,9 +32,6 @@ func NewCube() *Cube {
     return cube
 }
 
-
-// ObjectiveFunction menghitung nilai objektif berdasarkan urutan elemen.
-// Contoh sederhana: jumlah elemen dalam urutan sebagai skor.
 func (c *Cube) ObjectiveFunction() int {
 	total := 0
 	for _, val := range c.sequence {
@@ -48,7 +41,7 @@ func (c *Cube) ObjectiveFunction() int {
 }
 
 func (c *Cube) GenerateNeighbor() *Cube {
-    neighbor := *c // Menyalin state cube saat ini
+    neighbor := *c 
     rand.Seed(time.Now().UnixNano())
     i, j := rand.Intn(SEQUENCE_SIZE), rand.Intn(SEQUENCE_SIZE)
     fmt.Printf("Swapping indices: %d and %d\n", i, j) // Debugging statement
@@ -57,7 +50,6 @@ func (c *Cube) GenerateNeighbor() *Cube {
     fmt.Println("Neighbor sequence:", neighbor.sequence) // Debugging statement
     return &neighbor
 }
-
 
 func StochasticHillClimbing(c *Cube, maxIteration int) *Cube {
     current := c
@@ -75,9 +67,8 @@ func StochasticHillClimbing(c *Cube, maxIteration int) *Cube {
     return current
 }
 
-
 func main() {
-	initialCube := NewCube() // Memanggil konstruktor untuk membuat cube baru
+	initialCube := NewCube() 
 	maxIterations := 10
 	result := StochasticHillClimbing(initialCube, maxIterations)
 
