@@ -12,7 +12,14 @@ func main() {
 	fmt.Println("INITIAL STATE:")
 	printState(c)
 
-	maxIteration := 100000
+	// Get maxIteration from user input
+	var maxIteration int
+	fmt.Print("Enter the number of iterations: ")
+	_, err := fmt.Scanln(&maxIteration)
+	if err != nil {
+		fmt.Println("Invalid input:", err)
+		return
+	}
 
 	// Stochastic Hill-Climbing
 	fmt.Printf("FINAL STATE (Stochastic Hill-Climbing with %d iterations):\n", maxIteration)
@@ -21,6 +28,8 @@ func main() {
 	// Simulated Annealing
 	fmt.Printf("FINAL STATE (Simulated Annealing with %d iterations):\n", maxIteration)
 	executeSearch(localsearch.SimulatedAnnealing, c, maxIteration)
+
+	pressToContinue()
 }
 
 func printState(c *cube.Cube) {
@@ -49,4 +58,9 @@ func stuckFrequency(c *cube.Cube) int {
 		current = current.GetSuccessor()
 	}
 	return stuckCount
+}
+
+func pressToContinue() {
+	fmt.Print("Press Enter to continue...")
+	fmt.Scanln() // waits for the user to press Enter
 }
