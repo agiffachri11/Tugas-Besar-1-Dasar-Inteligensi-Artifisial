@@ -52,7 +52,7 @@ func stuckFrequency(c *cube.Cube) int {
 	var current *cube.Cube = c
 	var stuckCount int = 0
 	for current.GetSuccessor() != nil {
-		if current.GetScore() == current.GetSuccessor().GetScore() {
+		if current.GetScore() <= current.GetSuccessor().GetScore() {
 			stuckCount++
 		}
 		current = current.GetSuccessor()
