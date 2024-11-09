@@ -26,7 +26,7 @@ func main() {
 	final1.CountMagicSums()
 	fmt.Println("")
 
-	// Final State - Stochastic Hill-Climbing
+	// Final State - Simulated Annealing
 	fmt.Printf("FINAL STATE (Simulated Annealing with %d iterations):\n", maxIteration)
 	final2 := localsearch.SimulatedAnnealing(c, maxIteration)
 	fmt.Println("Cube Sequence:", final2.GetSequence())
