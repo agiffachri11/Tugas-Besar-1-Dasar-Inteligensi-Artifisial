@@ -33,6 +33,20 @@ func printState(c *cube.Cube) {
 func executeSearch(searchFunc func(*cube.Cube, int) *cube.Cube, c *cube.Cube, maxIteration int) {
 	start := time.Now()
 	final := searchFunc(c, maxIteration)
+	end := time.Since(start)
 	printState(final)
-	fmt.Printf("Function took %s\n\n", time.Since(start))
+	fmt.Println("Stuck freq: ", stuckFrequency(c))
+	fmt.Printf("Function took %s\n\n", end)
+}
+
+func stuckFrequency(c *cube.Cube) int {
+	var current *cube.Cube = c
+	var stuckCount int = 0
+	for current.GetSuccessor() != nil {
+		if current.GetScore() == current.GetSuccessor().GetScore() {
+			stuckCount++
+		}
+		current = current.GetSuccessor()
+	}
+	return stuckCount
 }
