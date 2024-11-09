@@ -4,33 +4,35 @@ import (
 	"diagonalmagiccube/cube"
 	"diagonalmagiccube/localsearch"
 	"fmt"
+	"time"
 )
 
 func main() {
 	c := cube.NewCube()
-
-	// Initial State
 	fmt.Println("INITIAL STATE:")
+	printState(c)
+
+	maxIteration := 100000
+
+	// Stochastic Hill-Climbing
+	fmt.Printf("FINAL STATE (Stochastic Hill-Climbing with %d iterations):\n", maxIteration)
+	executeSearch(localsearch.StochasticHillClimbing, c, maxIteration)
+
+	// Simulated Annealing
+	fmt.Printf("FINAL STATE (Simulated Annealing with %d iterations):\n", maxIteration)
+	executeSearch(localsearch.SimulatedAnnealing, c, maxIteration)
+}
+
+func printState(c *cube.Cube) {
 	fmt.Println("Cube Sequence:", c.GetSequence())
 	fmt.Println("Objective Function Score:", c.GetScore())
 	c.CountMagicSums()
-	fmt.Println("")
+	fmt.Println()
+}
 
-	var maxIteration int = 100000
-
-	// Final State - Stochastic Hill-Climbing
-	fmt.Printf("FINAL STATE (Stochastic Hill-Climbing with %d iterations):\n", maxIteration)
-	final1 := localsearch.StochasticHillClimbing(c, maxIteration)
-	fmt.Println("Cube Sequence:", final1.GetSequence())
-	fmt.Println("Objective Function Score:", final1.GetScore())
-	final1.CountMagicSums()
-	fmt.Println("")
-
-	// Final State - Simulated Annealing
-	fmt.Printf("FINAL STATE (Simulated Annealing with %d iterations):\n", maxIteration)
-	final2 := localsearch.SimulatedAnnealing(c, maxIteration)
-	fmt.Println("Cube Sequence:", final2.GetSequence())
-	fmt.Println("Objective Function Score:", final2.GetScore())
-	final2.CountMagicSums()
-	fmt.Println("")
+func executeSearch(searchFunc func(*cube.Cube, int) *cube.Cube, c *cube.Cube, maxIteration int) {
+	start := time.Now()
+	final := searchFunc(c, maxIteration)
+	printState(final)
+	fmt.Printf("Function took %s\n\n", time.Since(start))
 }

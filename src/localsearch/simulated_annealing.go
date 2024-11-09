@@ -7,7 +7,7 @@ import (
 )
 
 func schedule(t int) float64 {
-	return float64(100) / float64(t+1) // Jadwal pendinginan (cooling schedule)
+	return float64(100) / (0.001*float64(t) + 1) // Jadwal pendinginan (cooling schedule)
 }
 
 // Algoritma Simulated Annealing untuk mencari solusi
