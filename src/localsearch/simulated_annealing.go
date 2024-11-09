@@ -6,34 +6,34 @@ import (
 	"math/rand"
 )
 
-func schedule(t int) float64 {
-	return float64(100) / float64(t+1) // Jadwal pendinginan (cooling schedule)
-}
+// func schedule(t int) float64 {
+// 	return float64(100) / float64(t+1) // Jadwal pendinginan (cooling schedule)
+// }
 
-// Algoritma Simulated Annealing untuk mencari solusi
-func SimulatedAnnealing(c *cube.Cube, maxIterations int) *cube.Cube {
-	current := c // inisialisasi current sebagai kubus awal
+// // Algoritma Simulated Annealing untuk mencari solusi
+// func SimulatedAnnealing(c *cube.Cube, maxIterations int) *cube.Cube {
+// 	current := c // inisialisasi current sebagai kubus awal
 
-	for t := 0; t < maxIterations; t++ {
-		temperature := schedule(t) // Menghitung suhu sesuai iterasi
+// 	for t := 0; t < maxIterations; t++ {
+// 		temperature := schedule(t) // Menghitung suhu sesuai iterasi
 
-		// Membuat konfigurasi baru
-		next := current.RandomNeighbor()
-		// Menghitung perubahan skor atau deltaE antara current dan neighbor
-		deltaE := float64(current.GetScore() - next.GetScore())
+// 		// Membuat konfigurasi baru
+// 		next := current.RandomNeighbor()
+// 		// Menghitung perubahan skor atau deltaE antara current dan neighbor
+// 		deltaE := float64(current.GetScore() - next.GetScore())
 
-		// Memperbarui current berdasarkan deltaE dan probabilitas
-		// Jika deltaE > 0, maka neighbor adalah solusi yang lebih baik, next di assign ke current
-		if deltaE > 0 {
-			current.SetSuccessor(next)
-			current = next
-		} else if math.Exp(deltaE/temperature) > rand.Float64() {
-			current.SetSuccessor(next)
-			current = next
-		}
-	}
-	return current
-}
+// 		// Memperbarui current berdasarkan deltaE dan probabilitas
+// 		// Jika deltaE > 0, maka neighbor adalah solusi yang lebih baik, next di assign ke current
+// 		if deltaE > 0 {
+// 			current.SetSuccessor(next)
+// 			current = next
+// 		} else if math.Exp(deltaE/temperature) > rand.Float64() {
+// 			current.SetSuccessor(next)
+// 			current = next
+// 		}
+// 	}
+// 	return current
+// }
 
 // SimulatedAnnealing menjalankan algoritma simulated annealing
 // func SimulatedAnnealing(initial *cube.Cube, maxIterations int) *cube.Cube {
@@ -59,3 +59,36 @@ func SimulatedAnnealing(c *cube.Cube, maxIterations int) *cube.Cube {
 // 	}
 // 	return current // Mengembalikan Cube terbaik setelah semua iterasi selesai
 // }
+
+func schedule(t int) float64 {
+	return float64(100) / float64(t+1) // Jadwal pendinginan (cooling schedule)
+}
+
+// Algoritma Simulated Annealing untuk mencari solusi
+func SimulatedAnnealing(c *cube.Cube, maxIterations int) *cube.Cube {
+	current := c // inisialisasi current sebagai kubus awal
+
+	for t := 0; t < maxIterations; t++ {
+		temperature := schedule(t) // Menghitung suhu sesuai iterasi
+
+		// // Jika suhu sudah menncapai 0, proses berhenti dan mengembalikan solusi
+		// if temperature <= 0 {
+		// 	return current
+		// }
+
+		// Membuat konfigurasi neighbor (tetangga) baru dari state sekarang
+		next := current.RandomNeighbor()
+		// Menghitung perubahan skor atau deltaE antara current dan neighbor
+		deltaE := float64(next.GetScore() - current.GetScore())
+
+		// Memperbarui current berdasarkan deltaE dan probabilita
+		if deltaE < 0 { // Jika next lebih baik, (deltaE negatif) maka pindah ke next
+			current.SetSuccessor(next)
+			current = next
+		} else if math.Exp(-deltaE/temperature) > rand.Float64() { // Jika lebih buruk, terima dengan probabilitas tertentu
+			current.SetSuccessor(next)
+			current = next
+		}
+	}
+	return current
+}
