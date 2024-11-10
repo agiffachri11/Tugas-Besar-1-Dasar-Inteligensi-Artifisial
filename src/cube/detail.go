@@ -141,3 +141,13 @@ func (c *Cube) CountMagicOnSpaceDiagonal() int {
 	}
 	return spaceDiagonals
 }
+
+func GenerationDetail(generation *Generation) {
+	fmt.Println("Generation Details:")
+	fmt.Printf("Total Fitness: %.2f\n", generation.totalFitness)
+	fmt.Printf("Population Size: %d\n", len(generation.population))
+	for i := 0; i < POPULATION_SIZE; i++ {
+		fmt.Printf("Individuals %d Score: %f\n", i+1, fitness(generation.population[i]))
+	}
+	fmt.Println()
+}

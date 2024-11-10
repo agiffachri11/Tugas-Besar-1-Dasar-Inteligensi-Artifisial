@@ -2,7 +2,6 @@ package cube
 
 import (
 	"math/rand"
-	"time"
 )
 
 // Cube struct definition
@@ -31,7 +30,7 @@ func (c *Cube) SetSuccessor(successor *Cube) {
 // NewCube constructor initializes a Cube with a random sequence and score
 func NewCube() *Cube {
 	// Create a random source and random generator
-	source := rand.NewSource(time.Now().UnixNano())
+	source := rand.NewSource(rand.Int63())
 	r := rand.New(source)
 
 	// Create a new Cube instance with initialized score and nil successor

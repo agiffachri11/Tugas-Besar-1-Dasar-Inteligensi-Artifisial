@@ -8,26 +8,35 @@ import (
 )
 
 func main() {
-	c := cube.NewCube()
-	fmt.Println("INITIAL STATE:")
-	printState(c)
+	// c := cube.NewCube()
+	// fmt.Println("INITIAL STATE:")
+	// printState(c)
 
-	// Get maxIteration from user input
-	var maxIteration int
-	fmt.Print("Enter the number of iterations: ")
-	_, err := fmt.Scanln(&maxIteration)
-	if err != nil {
-		fmt.Println("Invalid input:", err)
-		return
-	}
+	// // Get maxIteration from user input
+	// var maxIteration int
+	// fmt.Print("Enter the number of iterations: ")
+	// _, err := fmt.Scanln(&maxIteration)
+	// if err != nil {
+	// 	fmt.Println("Invalid input:", err)
+	// 	return
+	// }
 
-	// Stochastic Hill-Climbing
-	fmt.Printf("FINAL STATE (Stochastic Hill-Climbing with %d iterations):\n", maxIteration)
-	executeSearch(localsearch.StochasticHillClimbing, c, maxIteration)
+	// // Stochastic Hill-Climbing
+	// fmt.Printf("FINAL STATE (Stochastic Hill-Climbing with %d iterations):\n", maxIteration)
+	// executeSearch(localsearch.StochasticHillClimbing, c, maxIteration)
 
-	// Simulated Annealing
-	fmt.Printf("FINAL STATE (Simulated Annealing with %d iterations):\n", maxIteration)
-	executeSearch(localsearch.SimulatedAnnealing, c, maxIteration)
+	// // Simulated Annealing
+	// fmt.Printf("FINAL STATE (Simulated Annealing with %d iterations):\n", maxIteration)
+	// executeSearch(localsearch.SimulatedAnnealing, c, maxIteration)
+
+	// Genetic Algorithm Initial State
+	g := cube.NewGeneration()
+	cube.GenerationDetail(g)
+
+	// Genetic Algorithm
+	final := localsearch.GeneticAlgorithm(g, 10000)
+	cube.GenerationDetail(final)
+	printState(cube.BestIndividual(final).GetCube())
 
 	pressToContinue()
 }
