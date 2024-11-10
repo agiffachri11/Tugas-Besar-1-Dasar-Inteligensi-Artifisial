@@ -32,11 +32,15 @@ func main() {
 	// Genetic Algorithm Initial State
 	g := cube.NewGeneration()
 	cube.GenerationDetail(g)
+	printState(cube.BestIndividual(g).GetCube())
 
 	// Genetic Algorithm
+	start := time.Now()
 	final := localsearch.GeneticAlgorithm(g, 10000)
+	end := time.Since(start)
 	cube.GenerationDetail(final)
 	printState(cube.BestIndividual(final).GetCube())
+	fmt.Printf("Function took %s\n\n", end)
 
 	pressToContinue()
 }

@@ -25,6 +25,10 @@ func (g *Generation) GetNextGeneration() *Generation {
 	return g.nextGeneration
 }
 
+func (g *Generation) GetTotalFitness() float64 {
+	return g.totalFitness
+}
+
 func (g *Generation) SetPopulation(population [POPULATION_SIZE]*Individual) {
 	g.population = population
 }
@@ -81,11 +85,24 @@ func fitness(individual *Individual) float64 {
 }
 
 func selection(generation *Generation) *Individual {
-	for i := 0; i < POPULATION_SIZE-2; i++ {
-		if rand.Float64() < (fitness(generation.population[i]) / generation.totalFitness) {
+	// // Ensure total fitness is not zero
+	// if generation.totalFitness == 0 {
+	// 	return generation.population[rand.Intn(POPULATION_SIZE)] // Randomly pick an individual
+	// }
+
+	// Select a random point on the cumulative wheel
+	randValue := rand.Float64()
+	var cumulativeFitness float64 = 0
+
+	// Find the individual whose cumulative fitness exceeds the random value
+	for i := 0; i < POPULATION_SIZE; i++ {
+		cumulativeFitness += fitness(generation.population[i]) / generation.totalFitness
+		if randValue < cumulativeFitness {
 			return generation.population[i]
 		}
 	}
+
+	// Fallback in case something goes wrong (shouldn't happen)
 	return generation.population[POPULATION_SIZE-1]
 }
 
@@ -146,6 +163,7 @@ func mutation(individual *Individual) *Individual {
 
 func Evolution(generation *Generation) *Generation {
 	// Initialize nextGeneration as a new Generation instance
+	// GenerationDetail(generation)
 	nextGeneration := &Generation{totalFitness: 0}
 	var population [POPULATION_SIZE]*Individual
 	for i := 0; i < POPULATION_SIZE; i++ {
@@ -153,11 +171,21 @@ func Evolution(generation *Generation) *Generation {
 		parentY := selection(generation)
 		child := crossOver(parentX, parentY)
 		mutation(child)
+		var abortion int = 0
+		for ((child.cube.score > parentX.cube.score) || (child.cube.score > parentY.cube.score)) && abortion < 1000 {
+			if child.cube.score == parentX.cube.score {
+				mutation(child)
+			} else {
+				child = crossOver(parentX, parentY)
+			}
+			abortion++
+		}
 		population[i] = child
 		nextGeneration.totalFitness += fitness(child)
 	}
 	nextGeneration.SetPopulation(population)
 	generation.SetNextGeneration(nextGeneration)
+	// fmt.Println(generation.totalFitness)
 	return nextGeneration
 }
 
