@@ -8,6 +8,8 @@ type Generation struct {
 	population     [POPULATION_SIZE]*Individual
 	nextGeneration *Generation
 	totalFitness   float64
+	bestScore      int
+	avgScore       int
 }
 
 type Individual struct {
@@ -27,6 +29,13 @@ func (g *Generation) GetNextGeneration() *Generation {
 
 func (g *Generation) GetTotalFitness() float64 {
 	return g.totalFitness
+}
+
+func (g *Generation) GetBestScore() int {
+	return g.bestScore
+}
+func (g *Generation) GetAVGScore() int {
+	return g.avgScore
 }
 
 func (g *Generation) SetPopulation(population [POPULATION_SIZE]*Individual) {
@@ -207,4 +216,17 @@ func BestIndividual(generation *Generation) *Individual {
 	}
 
 	return best
+}
+
+func SearchBestAVGScore(generation *Generation) {
+	var total int = 0
+	var best int = generation.population[0].cube.score
+	for i := 0; i < POPULATION_SIZE; i++ {
+		total += generation.population[i].cube.score
+		if generation.population[i].cube.score < best {
+			best = generation.population[i].cube.score
+		}
+	}
+	generation.bestScore = best
+	generation.avgScore = total / POPULATION_SIZE
 }
