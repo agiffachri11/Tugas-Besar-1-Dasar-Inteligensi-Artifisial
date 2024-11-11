@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bufio"
 	"diagonalmagiccube/cube"
 	"diagonalmagiccube/localsearch"
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -73,14 +75,29 @@ func pressToContinue() {
 }
 
 func plotObjectiveFunction(c *cube.Cube, interval int) {
+	// Create or open the file for writing
+	file, err := os.Create("output.txt")
+	if err != nil {
+		fmt.Println("Error creating file:", err)
+		return
+	}
+	// Ensure the file gets closed after writing
+	defer file.Close()
+
+	// Create a buffered writer to write to the file
+	writer := bufio.NewWriter(file)
+
 	var i int = 0
 	current := c
 	for current != nil {
 		if (i % interval) == 0 {
-			fmt.Println(i, current.GetScore())
+			// Write to the file instead of printing to console
+			writer.WriteString(fmt.Sprintf("%d %d\n", i, current.GetScore()))
 		}
 		current = current.GetSuccessor()
 		i++
 	}
-	fmt.Println("")
+
+	// Flush the buffered writer to ensure everything is written to the file
+	writer.Flush()
 }
