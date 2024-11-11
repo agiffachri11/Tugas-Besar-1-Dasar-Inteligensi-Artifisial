@@ -1,5 +1,7 @@
 # Tugas Besar 1 - Dasar Inteligensi Artifisial
 
+Program pencarian solusi diagonal magic cube dengan metode local search ini diimplementasikan menggunakan bahasa pemrograman Go. Pemilihan Go dalam tugas ini didasari oleh keunggulannya dalam hal kecepatan, efisiensi memori, dan kesederhanaan.
+
 **Pembagian Tugas**
 
 **18222009 - Daffa Ramadhan Elengi**
@@ -20,10 +22,8 @@
 - Mengerjakan bagian simulated annealing
 - Finalisasi dokumen
 
-<br>  
+<br> 
 
 **18222078 - Monica Angela Hartono**
 - Mengerjakan bagian simulated annealing
 - Finalisasi dokumen
-
-
