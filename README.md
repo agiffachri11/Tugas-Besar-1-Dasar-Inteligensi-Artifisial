@@ -1,5 +1,6 @@
 # Tugas Besar 1 - Dasar Inteligensi Artifisial
 
+**Pembagian Tugas**
 **18222009 - Daffa Ramadhan Elengi**
 - Mengerjakan bagian genetic algorithm
 - Membuat struktur program
