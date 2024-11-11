@@ -2,6 +2,20 @@
 
 Program pencarian solusi diagonal magic cube dengan metode local search ini diimplementasikan menggunakan bahasa pemrograman Go. Pemilihan Go dalam tugas ini didasari oleh keunggulannya dalam hal kecepatan, efisiensi memori, dan kesederhanaan.
 
+Cara menjalankan program:
+1. Buka command prompt pada directory ./src
+```
+cd ./src
+```
+2. Jalankan command berikut
+```
+go run ./app/main.go
+```
+3. Jika belum menginstal Go, buka executable pada ./src
+```
+main.exe
+```
+
 **Pembagian Tugas**
 
 **18222009 - Daffa Ramadhan Elengi**
