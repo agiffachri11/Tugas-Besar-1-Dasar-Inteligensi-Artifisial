@@ -20,12 +20,11 @@ func main() {
 	}
 
 	// Stochastic Hill-Climbing
-	cubeA := cube.NewCube()
-	fmt.Println("INITIAL STATE:")
-	printState(cubeA)
-	fmt.Printf("FINAL STATE (Stochastic Hill-Climbing with %d iterations):\n", maxIteration)
-	executeSearch(localsearch.StochasticHillClimbing, cubeA, maxIteration)
-	plotObjectiveFunction(cubeA, maxIteration/10)
+	// cubeA := cube.NewCube()
+	// fmt.Println("INITIAL STATE:")
+	// printState(cubeA)
+	// fmt.Printf("FINAL STATE (Stochastic Hill-Climbing with %d iterations):\n", maxIteration)
+	// executeSearch(localsearch.StochasticHillClimbing, cubeA, maxIteration)
 
 	// Simulated Annealing
 	cubeB := cube.NewCube()
@@ -33,7 +32,6 @@ func main() {
 	printState(cubeB)
 	fmt.Printf("FINAL STATE (Simulated Annealing with %d iterations):\n", maxIteration)
 	executeSearch(localsearch.SimulatedAnnealing, cubeB, maxIteration)
-	plotObjectiveFunction(cubeB, maxIteration/10)
 
 	// Genetic Algorithm
 	// generation := cube.NewGeneration()
@@ -59,14 +57,17 @@ func printState(c *cube.Cube) {
 	fmt.Println()
 }
 
-func executeSearch(searchFunc func(*cube.Cube, int, *int) *cube.Cube, c *cube.Cube, maxIteration int) {
+func executeSearch(searchFunc func(*cube.Cube, int, *int, []float64) *cube.Cube, c *cube.Cube, maxIteration int) {
+	sliceDeltaE := make([]float64, maxIteration)
 	stuckCount := 0
 	start := time.Now()
-	final := searchFunc(c, maxIteration, &stuckCount)
+	final := searchFunc(c, maxIteration, &stuckCount, sliceDeltaE)
 	end := time.Since(start)
 	printState(final)
 	fmt.Println("Stuck Freq: ", stuckCount)
 	fmt.Printf("Function took %s\n\n", end)
+	plotObjectiveFunction(c, maxIteration/1000)
+	plotProbabilitySA(sliceDeltaE, maxIteration/1000)
 }
 
 func pressToContinue() {
@@ -96,6 +97,30 @@ func plotObjectiveFunction(c *cube.Cube, interval int) {
 		}
 		current = current.GetSuccessor()
 		i++
+	}
+
+	// Flush the buffered writer to ensure everything is written to the file
+	writer.Flush()
+}
+
+func plotProbabilitySA(sliceDeltaE []float64, interval int) {
+	// Create or open the file for writing
+	file, err := os.Create("outputDeltaE.txt")
+	if err != nil {
+		fmt.Println("Error creating file:", err)
+		return
+	}
+	// Ensure the file gets closed after writing
+	defer file.Close()
+
+	// Create a buffered writer to write to the file
+	writer := bufio.NewWriter(file)
+
+	for i := 0; i < len(sliceDeltaE); i++ {
+		if ((i + 1) % interval) == 0 {
+			// Write to the file instead of printing to console
+			writer.WriteString(fmt.Sprintf("%d %f\n", i+1, sliceDeltaE[i]))
+		}
 	}
 
 	// Flush the buffered writer to ensure everything is written to the file

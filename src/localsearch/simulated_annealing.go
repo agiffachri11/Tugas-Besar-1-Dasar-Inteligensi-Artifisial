@@ -11,7 +11,7 @@ func schedule(t int) float64 {
 }
 
 // Algoritma Simulated Annealing untuk mencari solusi
-func SimulatedAnnealing(c *cube.Cube, maxIterations int, stuckCount *int) *cube.Cube {
+func SimulatedAnnealing(c *cube.Cube, maxIterations int, stuckCount *int, sliceDeltaE []float64) *cube.Cube {
 	current := c // inisialisasi current sebagai kubus awal
 
 	for t := 0; t < maxIterations; t++ {
@@ -21,6 +21,7 @@ func SimulatedAnnealing(c *cube.Cube, maxIterations int, stuckCount *int) *cube.
 		next := current.RandomNeighbor()
 		// Menghitung perubahan skor atau deltaE antara current dan neighbor
 		deltaE := float64(next.GetScore() - current.GetScore())
+		sliceDeltaE[t] = deltaE
 
 		current.SetSuccessor(cube.CopyCube(current))
 		// Memperbarui current berdasarkan deltaE dan probabilita
