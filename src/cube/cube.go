@@ -1,7 +1,9 @@
 package cube
 
 import (
+	"encoding/json"
 	"math/rand"
+	"os"
 )
 
 // Cube struct definition
@@ -78,4 +80,40 @@ func (c *Cube) RandomNeighbor() *Cube {
 	neighbor.sequence[idx2] = c.sequence[idx1]
 	neighbor.score = neighbor.ObjectiveFunction()
 	return neighbor
+}
+
+// Custom JSON marshal method
+func (c *Cube) MarshalJSON() ([]byte, error) {
+	return json.Marshal(struct {
+		Sequence  [SEQUENCE_SIZE]int `json:"sequence"`
+		Score     int                `json:"score"`
+		Successor *Cube              `json:"successor,omitempty"`
+	}{
+		Sequence:  c.sequence,
+		Score:     c.score,
+		Successor: c.successor,
+	})
+}
+
+// Helper function to convert the successor-linked structure into a slice format
+func FlattenCubeList(cube *Cube) []*Cube {
+	var cubes []*Cube
+	for current := cube; current != nil; current = current.successor {
+		cubes = append(cubes, current)
+	}
+	return cubes
+}
+
+// SaveCubeToFile saves the entire linked structure to a JSON file in a flattened array format
+func SaveCubeToFile(cube *Cube, filename string) error {
+	file, err := os.Create(filename)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	// Flatten the cube list and encode it as JSON
+	// flattenedCubes := FlattenCubeList(cube)
+	encoder := json.NewEncoder(file)
+	return encoder.Encode(cube)
 }
