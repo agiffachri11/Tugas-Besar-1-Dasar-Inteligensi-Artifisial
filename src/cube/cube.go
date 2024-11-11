@@ -85,23 +85,27 @@ func (c *Cube) RandomNeighbor() *Cube {
 // Custom JSON marshal method
 func (c *Cube) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
-		Sequence  [SEQUENCE_SIZE]int `json:"sequence"`
-		Score     int                `json:"score"`
-		Successor *Cube              `json:"successor,omitempty"`
+		Sequence [SEQUENCE_SIZE]int `json:"sequence"`
+		Score    int                `json:"score"`
 	}{
-		Sequence:  c.sequence,
-		Score:     c.score,
-		Successor: c.successor,
+		Sequence: c.sequence,
+		Score:    c.score,
 	})
 }
 
 // Helper function to convert the successor-linked structure into a slice format
-func FlattenCubeList(cube *Cube) []*Cube {
+func FlattenCubeList(cube *Cube) CubeJSONContainer {
 	var cubes []*Cube
 	for current := cube; current != nil; current = current.successor {
 		cubes = append(cubes, current)
 	}
-	return cubes
+	// var container CubeJSONContainer :
+	container := CubeJSONContainer{Cube: cubes}
+	return container
+}
+
+type CubeJSONContainer struct {
+	Cube []*Cube `json:"cube"`
 }
 
 // SaveCubeToFile saves the entire linked structure to a JSON file in a flattened array format
@@ -113,7 +117,7 @@ func SaveCubeToFile(cube *Cube, filename string) error {
 	defer file.Close()
 
 	// Flatten the cube list and encode it as JSON
-	// flattenedCubes := FlattenCubeList(cube)
+	flattenedCubes := FlattenCubeList(cube)
 	encoder := json.NewEncoder(file)
-	return encoder.Encode(cube)
+	return encoder.Encode(flattenedCubes)
 }
