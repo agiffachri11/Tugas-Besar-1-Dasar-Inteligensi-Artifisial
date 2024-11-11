@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math/rand"
 	"os"
+	"path/filepath"
 )
 
 // Cube struct definition
@@ -110,6 +111,13 @@ type CubeJSONContainer struct {
 
 // SaveCubeToFile saves the entire linked structure to a JSON file in a flattened array format
 func SaveCubeToFile(cube *Cube, filename string) error {
+	// Ensure the directory exists
+	dir := filepath.Dir(filename)
+	if err := os.MkdirAll(dir, os.ModePerm); err != nil {
+		return err
+	}
+
+	// Create the file at the specified path
 	file, err := os.Create(filename)
 	if err != nil {
 		return err

@@ -6,47 +6,61 @@ import (
 	"diagonalmagiccube/localsearch"
 	"fmt"
 	"os"
+	"os/exec"
 	"time"
 )
 
 func main() {
 	// Get maxIteration from user input
-	var maxIteration int = 10000
-	// fmt.Print("Enter the number of iterations: ")
-	// _, err := fmt.Scanln(&maxIteration)
-	// if err != nil {
-	// 	fmt.Println("Invalid input:", err)
-	// 	return
-	// }
+	var option int
+	fmt.Print("1. Stochastic Hill Climbing\n2. Simulated Annealing\n3. Genetic Algorithm\nChoose algorithm:")
+	_, err := fmt.Scanln(&option)
+	if err != nil {
+		fmt.Println("Invalid input:", err)
+		return
+	}
 
-	// Stochastic Hill-Climbing
-	// cubeA := cube.NewCube()
-	// fmt.Println("INITIAL STATE:")
-	// printState(cubeA)
-	// fmt.Printf("FINAL STATE (Stochastic Hill-Climbing with %d iterations):\n", maxIteration)
-	// executeSearch(localsearch.StochasticHillClimbing, cubeA, maxIteration)
+	var maxIteration int
+	fmt.Print("Enter the number of iterations: ")
+	_, err = fmt.Scanln(&maxIteration)
+	if err != nil {
+		fmt.Println("Invalid input:", err)
+		return
+	}
 
-	// Simulated Annealing
-	// cubeB := cube.NewCube()
-	// fmt.Println("INITIAL STATE:")
-	// printState(cubeB)
-	// fmt.Printf("FINAL STATE (Simulated Annealing with %d iterations):\n", maxIteration)
-	// executeSearch(localsearch.SimulatedAnnealing, cubeB, maxIteration)
-
-	// Genetic Algorithm
-	generation := cube.NewGeneration()
-	cube.GenerationDetail(generation)
-	printState(cube.BestIndividual(generation).GetCube())
-	start := time.Now()
-	final := localsearch.GeneticAlgorithm(generation, maxIteration)
-	end := time.Since(start)
-	plotGeneticAlgorithm(generation, maxIteration/1000)
-	cube.GenerationDetail(final)
-	printState(cube.BestIndividual(final).GetCube())
-	fmt.Printf("Function took %s\n\n", end)
-
-	// SAVING FILE FOR UNITY3D
-	// cube.SaveCubeToFile(cubeB, "cube.json")
+	if option == 1 {
+		// Stochastic Hill-Climbing
+		cubeA := cube.NewCube()
+		fmt.Println("INITIAL STATE:")
+		printState(cubeA)
+		fmt.Printf("FINAL STATE (Stochastic Hill-Climbing with %d iterations):\n", maxIteration)
+		executeSearch(localsearch.StochasticHillClimbing, cubeA, maxIteration)
+		// SAVING FILE FOR UNITY3D
+		cube.SaveCubeToFile(cubeA, "./cubevisual/Cube_Data/StreamingAssets/cube.json")
+		StartVisualization()
+	} else if option == 2 {
+		// Simulated Annealing
+		cubeB := cube.NewCube()
+		fmt.Println("INITIAL STATE:")
+		printState(cubeB)
+		fmt.Printf("FINAL STATE (Simulated Annealing with %d iterations):\n", maxIteration)
+		executeSearch(localsearch.SimulatedAnnealing, cubeB, maxIteration)
+		// SAVING FILE FOR UNITY3D
+		cube.SaveCubeToFile(cubeB, "./cubevisual/Cube_Data/StreamingAssets/cube.json")
+		StartVisualization()
+	} else if option == 3 {
+		// Genetic Algorithm
+		generation := cube.NewGeneration()
+		cube.GenerationDetail(generation)
+		printState(cube.BestIndividual(generation).GetCube())
+		start := time.Now()
+		final := localsearch.GeneticAlgorithm(generation, maxIteration)
+		end := time.Since(start)
+		// plotGeneticAlgorithm(generation, maxIteration/1000)
+		cube.GenerationDetail(final)
+		printState(cube.BestIndividual(final).GetCube())
+		fmt.Printf("Function took %s\n\n", end)
+	}
 
 	pressToContinue()
 }
@@ -67,7 +81,7 @@ func executeSearch(searchFunc func(*cube.Cube, int, *int, []float64) *cube.Cube,
 	printState(final)
 	fmt.Println("Stuck Freq: ", stuckCount)
 	fmt.Printf("Function took %s\n\n", end)
-	plotObjectiveFunction(c, maxIteration/1000)
+	// plotObjectiveFunction(c, maxIteration/1000)
 	// plotProbabilitySA(sliceDeltaE, maxIteration/1000)
 }
 
@@ -154,4 +168,20 @@ func plotGeneticAlgorithm(g *cube.Generation, interval int) {
 
 	// Flush the buffered writer to ensure everything is written to the file
 	writer.Flush()
+}
+
+func StartVisualization() {
+	// Path to the main.exe file
+	executablePath := "./cubevisual/Cube.exe" // Use full path if it's not in the same directory
+
+	// Create the command to execute main.exe
+	cmd := exec.Command(executablePath)
+
+	// Run the executable and wait for it to finish
+	if err := cmd.Run(); err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+
+	fmt.Println("main.exe ran successfully.")
 }
